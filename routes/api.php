@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Route;
 //
 //Route::post('/photo', 'App\Http\Controllers\PhotoController@store')->middleware(PhotoMiddleware::class);
 Route::post('/register', 'App\Http\Controllers\AuthenticationController@register');
+Route::post('/login', 'App\Http\Controllers\AuthenticationController@login');
+
 //
 //Route::get('/env', function (){
 //   return response()->json([
