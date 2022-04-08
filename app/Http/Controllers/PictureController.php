@@ -3,12 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Http\Validation\PictureValidation;
+use App\Models\Like;
 use App\Models\Picture;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
-use function GuzzleHttp\Promise\all;
 
 /**
  * Class PictureController
@@ -17,13 +17,14 @@ use function GuzzleHttp\Promise\all;
 class PictureController extends Controller
 {
     /**
+     * @param Request $request
      * @return JsonResponse
      */
     public function search(Request $request): JsonResponse
     {
         $param = $request->input('search');
-        if($param){
-            $pictures = Picture::where('title','like','%'.$param.'%')->get();
+        if ($param) {
+            $pictures = Picture::where('title', 'like', '%' . $param . '%')->get();
         } else {
             $pictures = Picture::all();
         }
@@ -62,10 +63,46 @@ class PictureController extends Controller
     public function show($id): JsonResponse
     {
         $picture = Picture::find($id);
-        if(!$picture){
-            return response()->json(['message'=>'Not found'],403);
+        if (!$picture) {
+            return response()->json(['message' => 'Not found'], 403);
         }
         return response()->json($picture);
 
     }
+
+    /**
+     * @param $id
+     * @return JsonResponse
+     */
+    public function checkLike($id): JsonResponse
+    {
+        $picture = Picture::find($id);
+        if (Auth::user()) {
+            $like = Like::where('picture_id', $picture->id)->where('user_id', Auth::user()->getAuthIdentifier())->first();
+            if ($like) {
+                return response()->json(true, 200);
+            }
+        }
+        return response()->json(false, 200);
+    }
+
+    /**
+     * @param $id
+     * @return JsonResponse
+     */
+    public function handleLike($id): JsonResponse
+    {
+        $picture = Picture::find($id);
+        $like = Like::where('picture_id', $picture->id)->where('user_id', Auth::user()->getAuthIdentifier())->first();
+        if ($like) {
+            $like->delete();
+            return response()->json(['success' => 'Picture unliked'], 200);
+        }
+        Like::create([
+            'picture_id' => $picture->id,
+            'user_id' => Auth::user()->getAuthIdentifier()
+        ]);
+        return response()->json(['success' => 'Picture liked'], 200);
+    }
+
 }

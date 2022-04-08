@@ -24,6 +24,9 @@
         "sass-loader": "^11.0.1"
     },
     "dependencies": {
+        "@material-ui/core": "^4.12.4",
+        "@material-ui/icons": "^4.11.3",
+        "@mui/icons-material": "^5.6.0",
         "react-loader-spinner": "^6.0.0-0",
         "react-router": "^6.3.0",
         "react-router-dom": "^6.3.0"

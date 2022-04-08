@@ -12,7 +12,8 @@ class Picture extends React.Component {
             description: "",
             picture: {},
             redirect: false,
-            errors: []
+            errors: [],
+            liked: false
         };
     }
 
@@ -27,7 +28,9 @@ class Picture extends React.Component {
             Axios.get(`http://127.0.0.1:8000/api/picture/${id}`, headers)
                 .then(res => {
                     console.log(res.data);
-                    this.setState({picture: res.data})
+                    this.setState({picture: res.data}, ()=>{
+                        this.checkLike();
+                    })
                 })
                 .catch(error => {
                     console.log(error.response);
@@ -36,6 +39,36 @@ class Picture extends React.Component {
             this.setState({redirect: true})
         }
     };
+
+    checkLike() {
+        let headers = {
+            headers: {
+                'API-TOKEN' : localStorage.getItem('token')
+            }
+        }
+        Axios.get(`http://127.0.0.1:8000/api/picture/${this.state.picture.id}/checkLike`, headers)
+            .then(res => {
+                this.setState({liked: res.data})
+            })
+            .catch(error => {
+                console.log(error.response);
+            })
+    }
+
+    handleLike(){
+        let headers = {
+            headers: {
+                'API-TOKEN' : localStorage.getItem('token')
+            }
+        }
+        Axios.get(`http://127.0.0.1:8000/api/picture/${this.state.picture.id}/handleLike`, headers)
+            .then(res => {
+                this.checkLike();
+            })
+            .catch(error => {
+                console.log(error.response);
+            })
+    }
 
     render() {
         if (this.state.redirect) {
@@ -51,7 +84,7 @@ class Picture extends React.Component {
                             <div className="row">
                                 <div className="col-8">
                                     <img className="img-fluid img-thumbnail"
-                                         src={`http://127.0.0.1:8000/storage/pictures/${this.state.picture.image}`}/>
+                                         src={`http://127.0.0.1:8000/storage/pictures/${this.state.picture.image}`} alt=""/>
                                 </div>
                                 <div className="col-4">
                                     <div className="author">
@@ -59,6 +92,17 @@ class Picture extends React.Component {
                                         <p>{this.state.picture.description}</p>
                                         <h4>Author : <span
                                             className="badge bg-secondary">{this.state.picture.user.email}</span></h4>
+                                        {
+                                            this.state.liked
+                                            ?
+                                                <>
+                                                    <input className="btn btn-sm btn-danger" type="button" value="Unlike" onClick={()=>this.handleLike()}></input>
+                                                </>
+                                            :
+                                                <>
+                                                    <input className="btn btn-sm btn-success" type="button" value="Like" onClick={()=>this.handleLike()}></input>
+                                                </>
+                                        }
                                     </div>
                                 </div>
                             </div>

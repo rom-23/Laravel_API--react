@@ -21,7 +21,7 @@ class Navbar extends React.Component {
                 <nav className="navbar navbar-expand-lg navbar-light bg-light">
                     <div className="container-fluid">
                         <Link className="navbar-brand" to="/">
-                            Lareact
+                            Lareact App
                         </Link>
                         <button
                             className="navbar-toggler"
