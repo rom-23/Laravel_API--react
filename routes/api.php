@@ -1,20 +1,11 @@
 <?php
 
-use App\Http\Middleware\PhotoMiddleware;
-use Illuminate\Http\Request;
+use App\Http\Middleware\React;
 use Illuminate\Support\Facades\Route;
 
-//Route::get('/users', 'App\Http\Controllers\TestController@getMethod');
-//
-//Route::post('/users', 'App\Http\Controllers\TestController@postMethod');
-//
-//Route::post('/photo', 'App\Http\Controllers\PhotoController@store')->middleware(PhotoMiddleware::class);
+Route::post('/picture/store', 'App\Http\Controllers\PictureController@store')->middleware(React::class);
 Route::post('/register', 'App\Http\Controllers\AuthenticationController@register');
 Route::post('/login', 'App\Http\Controllers\AuthenticationController@login');
+Route::post('/picture', 'App\Http\Controllers\PictureController@search');
+Route::get('/picture/{id}', 'App\Http\Controllers\PictureController@show')->middleware(React::class);
 
-//
-//Route::get('/env', function (){
-//   return response()->json([
-//       'connection'=>env('DB_CONNECTION')
-//   ]);
-//});

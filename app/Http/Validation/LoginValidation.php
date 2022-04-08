@@ -4,8 +4,15 @@ namespace App\Http\Validation;
 
 use JetBrains\PhpStorm\ArrayShape;
 
+/**
+ * Class LoginValidation
+ * @package App\Http\Validation
+ */
 class LoginValidation
 {
+    /**
+     * @return \string[][]
+     */
     #[ArrayShape(['email' => "string[]", 'password' => "string[]"])] public function Rules(): array
     {
         return [
@@ -14,6 +21,9 @@ class LoginValidation
         ];
     }
 
+    /**
+     * @return string[]
+     */
     #[ArrayShape(['email.required' => "string", 'password.required' => "string"])] public function Messages(): array
     {
         return [
